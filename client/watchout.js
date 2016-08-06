@@ -1,7 +1,4 @@
 // start slingin' some d3 here.
-// var a = require(['./hello.js'], function() {
-//   hihi('nobody');
-// });
 
 var inCollisionFlag = false;
 
@@ -13,7 +10,7 @@ var randomAsteroidGenerator = function(index) {
     id: index,
     x: Math.random() * 95,
     y: Math.random() * 95,
-    radius: 2.5
+    radius: 3
   };
 };
 
@@ -23,7 +20,7 @@ for (var i = 0; i < 25; i++) {
   dataset.push(randomAsteroidGenerator(i));
 }
 
-var color = d3.scaleOrdinal().range(d3.schemeCategory20);
+// var color = d3.scaleOrdinal().range(d3.schemeCategory20);
 
 var circles = d3.range(1).map(function() {
   return {
@@ -110,7 +107,7 @@ svg.selectAll('circle')
 .attr('cx', function(d) { return d.x.toString() + '%'; })
 .attr('cy', function(d) { return d.y.toString() + '%'; })
 .attr('r', '1%')
-.style('fill', function(d, i) { return color(i); })
+.style('fill', function(d, i) { return ['Blue', 'Fuchsia', 'Lime'][Math.floor(Math.random() * 3)]; })
 .call(d3.drag()
 .on('start', dragstarted)
 .on('drag', dragged)
@@ -125,8 +122,8 @@ svg.selectAll('image').data(dataset).enter().append('image')
 .attr('y', function(d) {
   return d.y.toString() + '%';
 })
-.attr('height', '5%')
-.attr('width', '5%');
+.attr('height', '6%')
+.attr('width', '6%');
 
 
 var collide = function() {
@@ -200,11 +197,15 @@ var randomMove = function() {
     // return d3.interpolateString(
       // 'rotate(0,' + this.x.animVal.value + ',' + this.y.animVal.value + ')',
       // 'rotate(360,' + this.__data__.x * window.innerWidth + ',' + this.__data__.y * window.innerHeight + ')');
-    console.log(this.x.animVal.value);
+    // console.log(this.x.animVal.value);
+    // return d3.interpolateString(
+    //   'rotate(0)',
+    //   'rotate(720)');
+
 
     return d3.interpolateString(
-      'rotate(0,' + (this.x.baseVal.value + 0.025 * window.innerWidth) + ', ' + (this.y.baseVal.value + 0.025 * window.innerHeight) + ')',
-      'rotate(720,' + ((this.__data__.x + 2.5) / 100 * window.innerWidth) + ', ' + (this.__data__.y / 100 * window.innerHeight) + ')');
+      'rotate(0,' + (this.x.baseVal.value + 0.03 * window.innerWidth) + ', ' + (this.y.baseVal.value + 0.03 * window.innerHeight) + ')',
+      'rotate(720,' + ((this.__data__.x + 3) / 100 * window.innerWidth) + ', ' + ((this.__data__.y + 3) / 100 * window.innerHeight) + ')');
 
   })
   .tween('x', function() {
@@ -233,14 +234,6 @@ window.setTimeout(function() {
   randomMove();
   window.setInterval(randomMove, 4300);
 }, 1000);
-
-
-
-
-
-
-
-//CREATE ASTEROIDS
 
 
 
