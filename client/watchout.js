@@ -3,26 +3,29 @@
 //   hihi('nobody');
 // });
 
-var counter = 0;
+var inCollisionFlag = false;
+
+var dashboard = [{name: 'High Score', value: 0, y: 5}, {name: 'Score', value: 0, y: 10}, {name: 'Collisions', value: 0, y: 15}];
 
 var boom = function() {
-  d3.select('svg > rect').attr('fill', 'pink');
-  d3.select('svg > text').text(function() {
-    return 'Score: ' + counter;
-  });
-  counter = 0;
+  if (!inCollisionFlag) {
+    inCollisionFlag = true;
+    d3.select('svg > rect').attr('fill', 'pink');
+    dashboard[1]['value'] = 0;
+    dashboard[2]['value'] = dashboard[2]['value'] + 1;
+  }
 };
 
 var live = function() {
-  d3.select('svg > rect').attr('fill', 'white');
-  d3.select('svg > text').text(function() {
-    return 'Score: ' + counter;
-  });
+  if (inCollisionFlag) {
+    inCollisionFlag = false;
+    d3.select('svg > rect').attr('fill', 'white');
+  }
 };
 
 window.setInterval(function() {
-  counter++;
-  console.log(counter);
+  dashboard[1]['value'] = dashboard[1]['value'] + 1;
+  // console.log(counter);
 }, 1000);
 
 var randomAsteroidGenerator = function(index) {
@@ -49,17 +52,38 @@ var svg = d3.select('body').append('svg').attr('position', 'fixed')
 svg.append('rect')
 .attr('width', '100%')
 .attr('height', '100%')
-.attr('fill', 'pink');
+.attr('fill', 'white');
 
-svg.append('text')
-.attr('y', '3%')
+svg.selectAll('text')
+.data(dashboard, function(item) {
+  return item.name;
+}).enter().append('text')
+.attr('name', function(d) {
+  d.name;
+})
+.attr('y', function(d) {
+  return d.y + '%';
+})
 .attr('x', '0.5%') 
-.text(function() {
-  return 'Score: 0';
-});
+.text(function(d) {
+  return d.name + ': ' + d.value;
+})
+.attr('font-size', '30')
+.attr('font-family', 'Verdana');
 
 
 var collide = function() {
+
+  if (dashboard[0]['value'] < dashboard[1]['value']) {
+    dashboard[0]['value'] = dashboard[1]['value'];
+  }
+
+  d3.selectAll('svg > text').data(dashboard, function(item) {
+    return item.name;
+  })
+  .text(function(d) {
+    return d.name + ': ' + d.value;
+  });
 
   var checkCollision = function (current, other) {
     var distanceSquared = Math.pow((current.x + current.radius - other.x) * window.innerWidth / window.innerHeight, 2) + Math.pow((current.y + current.radius - other.y), 2);
