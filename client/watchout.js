@@ -1,6 +1,10 @@
 // start slingin' some d3 here.
+// var a = require(['./hello.js'], function() {
+//   hihi('nobody');
+// });
+
 var dataset = [0, 10, 2, 3, 14, 5];
-var svg = d3.select('body').append('svg').attr('position', 'absolute')
+var svg = d3.select('body').append('svg').attr('position', 'fixed')
 .attr('top', 0)
 .attr('bottom', 0)
 .attr('width', '100%')
@@ -14,3 +18,4 @@ svg.selectAll('circle').data(dataset).enter().append('circle')
 .attr('r', function(d) {
   return d;
 });
+
