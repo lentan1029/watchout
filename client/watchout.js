@@ -7,7 +7,10 @@ var randomAsteroidGenerator = function(index) {
   return {
     id: index,
     x: Math.random() * 95,
-    y: Math.random() * 95
+    y: Math.random() * 95,
+    radius: 0.035,
+    vx: 1,
+    vy: 1
   };
 };
 
@@ -33,30 +36,45 @@ svg.selectAll('image').data(dataset).enter().append('image')
 })
 .attr('height', '5%')
 .attr('width', '5%');
-// .attr('cx', function(d, i) {
-//   return ((100 / dataset.length) * i).toString() + '%';
-// })
-// .attr('cy', '50%')
 
-// .attr('r', function(d) {
-//   return d;
+// var force = d3.forceSimulation(dataset);
+
+// force.on('tick', function() {
+//   console.log('hihihi');
+//   d3.selectAll('image').data(dataset, function(item) {
+//     return item.id;
+//   }).transition().duration(1000)
+//   .attr('x', function(d) {
+//     return d.x.toString() + '%';
+//   })
+//   .attr('y', function(d) {
+//     return d.y.toString() + '%';
+//   });
+//   force.ticks = 10;
 // });
+
+window.setInterval(collide, 50);
+
+var collide = function() {
+
+  var checkCollision = function (current, other) {
+    var r = current.radius * 100; //maybe add some padding. current.radius returns decimal
+    var cleft = current.x - r;
+    var cright = current.x + r;
+    var ctop = current.y - r;
+    var cbtm = current.y + r;
+    var oleft = other.x - r;
+    var oright = other.x + r;
+    var otop = other.y - r;
+    var obtm = other.y + r;
+  };
+};
 
 var randomMove = function() {
   for (var i = 0; i < dataset.length; i++) {
     dataset[i].x = Math.random() * 95;
     dataset[i].y = Math.random() * 95;
   }
-
-  d3.selectAll('image').data(dataset, function(item) {
-    return item.id;
-  }).transition().duration(1000)
-  .attr('x', function(d) {
-    return d.x.toString() + '%';
-  })
-  .attr('y', function(d) {
-    return d.y.toString() + '%';
-  });
 
 };
 
