@@ -3,13 +3,27 @@
 //   hihi('nobody');
 // });
 
+var counter = 0;
+
 var boom = function() {
   d3.select('svg > rect').attr('fill', 'pink');
+  d3.select('svg > text').text(function() {
+    return 'Score: ' + counter;
+  });
+  counter = 0;
 };
 
 var live = function() {
   d3.select('svg > rect').attr('fill', 'white');
+  d3.select('svg > text').text(function() {
+    return 'Score: ' + counter;
+  });
 };
+
+window.setInterval(function() {
+  counter++;
+  console.log(counter);
+}, 1000);
 
 var randomAsteroidGenerator = function(index) {
   return {
@@ -37,10 +51,18 @@ svg.append('rect')
 .attr('height', '100%')
 .attr('fill', 'pink');
 
+svg.append('text')
+.attr('y', '3%')
+.attr('x', '0.5%') 
+.text(function() {
+  return 'Score: 0';
+});
+
+
 var collide = function() {
 
   var checkCollision = function (current, other) {
-    var distanceSquared = Math.pow((current.x + current.radius - other.x), 2) + Math.pow((current.y + current.radius - other.y), 2);
+    var distanceSquared = Math.pow((current.x + current.radius - other.x) * window.innerWidth / window.innerHeight, 2) + Math.pow((current.y + current.radius - other.y), 2);
     
     // console.log(other.x, current.x, distanceSquared);
 
