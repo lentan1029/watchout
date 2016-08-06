@@ -17,8 +17,6 @@ for (var i = 0; i < 20; i++) {
   dataset.push(randomAsteroidGenerator(i));
 }
 
-console.log(dataset);
-
 var svg = d3.select('body').append('svg').attr('position', 'fixed')
 .attr('top', 0)
 .attr('bottom', 0)
@@ -45,7 +43,21 @@ svg.selectAll('image').data(dataset).enter().append('image')
 // });
 
 var randomMove = function() {
+  for (var i = 0; i < dataset.length; i++) {
+    dataset[i].x = Math.random() * 95;
+    dataset[i].y = Math.random() * 95;
+  }
+
+  d3.selectAll('image').data(dataset, function(item) {
+    return item.id;
+  }).transition().duration(1000)
+  .attr('x', function(d) {
+    return d.x.toString() + '%';
+  })
+  .attr('y', function(d) {
+    return d.y.toString() + '%';
+  });
 
 };
 
-// window.setInterval()
+window.setInterval(randomMove, 2000);
