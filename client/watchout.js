@@ -7,6 +7,53 @@ var inCollisionFlag = false;
 
 var dashboard = [{name: 'High Score', value: 0, y: 5}, {name: 'Score', value: 0, y: 10}, {name: 'Collisions', value: 0, y: 15}];
 
+
+var randomAsteroidGenerator = function(index) {
+  return {
+    id: index,
+    x: Math.random() * 95,
+    y: Math.random() * 95,
+    radius: 2.5
+  };
+};
+
+var dataset = [];
+
+for (var i = 0; i < 30; i++) {
+  dataset.push(randomAsteroidGenerator(i));
+}
+
+var color = d3.scaleOrdinal().range(d3.schemeCategory20);
+
+var circles = d3.range(1).map(function() {
+  return {
+    x: Math.random() * 95,
+    y: Math.random() * 95,
+    radius: 1
+  };
+});
+
+var dragstarted = function(d) {
+  d3.select(this).raise().classed('active', true);
+};
+
+var dragged = function(d) {
+  d3.select(this)
+  .attr('cx', function() {
+    d.x = event.pageX / window.innerWidth * 100;
+    // console.log(event.pageX / window.innerWidth * 100);
+    return d.x + '%';
+  })
+  .attr('cy', function() {
+    d.y = event.pageY / window.innerHeight * 100;
+    return d.y + '%';
+  });
+};
+
+var dragended = function(d) {
+  d3.select(this).classed('active', false);
+};
+
 var boom = function() {
   if (!inCollisionFlag) {
     inCollisionFlag = true;
@@ -28,20 +75,6 @@ window.setInterval(function() {
   // console.log(counter);
 }, 1000);
 
-var randomAsteroidGenerator = function(index) {
-  return {
-    id: index,
-    x: Math.random() * 95,
-    y: Math.random() * 95,
-    radius: 2.5
-  };
-};
-
-var dataset = [];
-
-for (var i = 0; i < 20; i++) {
-  dataset.push(randomAsteroidGenerator(i));
-}
 
 var svg = d3.select('body').append('svg').attr('position', 'fixed')
 .attr('top', 0)
@@ -70,6 +103,30 @@ svg.selectAll('text')
 })
 .attr('font-size', '30')
 .attr('font-family', 'Verdana');
+
+svg.selectAll('circle')
+.data(circles)
+.enter().append('circle')
+.attr('cx', function(d) { return d.x.toString() + '%'; })
+.attr('cy', function(d) { return d.y.toString() + '%'; })
+.attr('r', '1%')
+.style('fill', function(d, i) { return color(i); })
+.call(d3.drag()
+.on('start', dragstarted)
+.on('drag', dragged)
+.on('end', dragended));
+
+
+svg.selectAll('image').data(dataset).enter().append('image')
+.attr('xlink:href', './asteroid.png')
+.attr('x', function(d) {
+  return d.x.toString() + '%';
+})
+.attr('y', function(d) {
+  return d.y.toString() + '%';
+})
+.attr('height', '5%')
+.attr('width', '5%');
 
 
 var collide = function() {
@@ -137,7 +194,7 @@ var randomMove = function() {
 
   d3.selectAll('image').data(dataset, function(item) {
     return item.id;
-  }).transition().duration(2000)
+  }).transition().duration(4000)
   .tween('x', function() {
     return function() {
       collide();
@@ -160,67 +217,18 @@ var randomMove = function() {
 window.setInterval(function() {
   collide();
 }, 20);
-window.setInterval(randomMove, 3500);
+window.setTimeout(function() {
+  randomMove();
+  window.setInterval(randomMove, 4300);
+}, 1000);
 
 
-var circles = d3.range(1).map(function() {
-  return {
-    x: Math.random() * 95,
-    y: Math.random() * 95,
-    radius: 1
-  };
-});
-
-var color = d3.scaleOrdinal()
-    .range(d3.schemeCategory20);
 
 
-var dragstarted = function(d) {
-  d3.select(this).raise().classed('active', true);
-};
 
-var dragged = function(d) {
-  d3.select(this)
-  .attr('cx', function() {
-    d.x = event.pageX / window.innerWidth * 100;
-    // console.log(event.pageX / window.innerWidth * 100);
-    return d.x + '%';
-  })
-  .attr('cy', function() {
-    d.y = event.pageY / window.innerHeight * 100;
-    return d.y + '%';
-  });
-};
-
-var dragended = function(d) {
-  d3.select(this).classed('active', false);
-};
 
 
 //CREATE ASTEROIDS
-svg.selectAll('image').data(dataset).enter().append('image')
-.attr('xlink:href', './asteroid.png')
-.attr('x', function(d) {
-  return d.x.toString() + '%';
-})
-.attr('y', function(d) {
-  return d.y.toString() + '%';
-})
-.attr('height', '5%')
-.attr('width', '5%');
-
-
-svg.selectAll('circle')
-.data(circles)
-.enter().append('circle')
-.attr('cx', function(d) { return d.x.toString() + '%'; })
-.attr('cy', function(d) { return d.y.toString() + '%'; })
-.attr('r', '1%')
-.style('fill', function(d, i) { return color(i); })
-.call(d3.drag()
-.on('start', dragstarted)
-.on('drag', dragged)
-.on('end', dragended));
 
 
 
