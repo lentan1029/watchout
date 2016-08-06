@@ -19,7 +19,7 @@ var randomAsteroidGenerator = function(index) {
 
 var dataset = [];
 
-for (var i = 0; i < 30; i++) {
+for (var i = 0; i < 25; i++) {
   dataset.push(randomAsteroidGenerator(i));
 }
 
@@ -118,7 +118,7 @@ svg.selectAll('circle')
 
 
 svg.selectAll('image').data(dataset).enter().append('image')
-.attr('xlink:href', './asteroid.png')
+.attr('xlink:href', './shuriken.png')
 .attr('x', function(d) {
   return d.x.toString() + '%';
 })
@@ -195,6 +195,18 @@ var randomMove = function() {
   d3.selectAll('image').data(dataset, function(item) {
     return item.id;
   }).transition().duration(4000)
+  .attrTween('transform', function(d, i, a) {
+    // console.log(this.__data__.x * window.innerWidth - this.x.animVal.value);
+    // return d3.interpolateString(
+      // 'rotate(0,' + this.x.animVal.value + ',' + this.y.animVal.value + ')',
+      // 'rotate(360,' + this.__data__.x * window.innerWidth + ',' + this.__data__.y * window.innerHeight + ')');
+    console.log(this.x.animVal.value);
+
+    return d3.interpolateString(
+      'rotate(0,' + (this.x.baseVal.value + 0.025 * window.innerWidth) + ', ' + (this.y.baseVal.value + 0.025 * window.innerHeight) + ')',
+      'rotate(720,' + ((this.__data__.x + 2.5) / 100 * window.innerWidth) + ', ' + (this.__data__.y / 100 * window.innerHeight) + ')');
+
+  })
   .tween('x', function() {
     return function() {
       collide();
