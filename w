@@ -1,3 +1,5 @@
+// watchout for asteroids 
+
 // set inCollisionFlag, to eliminate multiple counts for the same collision
 var inCollisionFlag = false;
 
@@ -10,7 +12,7 @@ var randomAsteroidGenerator = function(index) {
     id: index,
     x: Math.random() * 95,
     y: Math.random() * 95,
-    radius: 3
+    radius: 2.5
   };
 };
 
@@ -128,8 +130,8 @@ svg.selectAll('image').data(dataset).enter().append('image')
 .attr('y', function(d) {
   return d.y.toString() + '%';
 })
-.attr('height', '6%')
-.attr('width', '6%');
+.attr('height', '5%')
+.attr('width', '5%');
 
 
 // Collide prototype
@@ -192,8 +194,8 @@ var randomMove = function() {
   }).transition().duration(4000)
   .attrTween('transform', function(d, i, a) {
     return d3.interpolateString(
-      'rotate(0,' + (this.x.baseVal.value + 0.03 * window.innerWidth) + ', ' + (this.y.baseVal.value + 0.03 * window.innerHeight) + ')',
-      'rotate(720,' + ((this.__data__.x + 3) / 100 * window.innerWidth) + ', ' + ((this.__data__.y + 3) / 100 * window.innerHeight) + ')');
+      'rotate(0,' + (this.x.baseVal.value + 0.025 * window.innerWidth) + ', ' + (this.y.baseVal.value + 0.025 * window.innerHeight) + ')',
+      'rotate(720,' + ((this.__data__.x + 2.5) / 100 * window.innerWidth) + ', ' + (this.__data__.y / 100 * window.innerHeight) + ')');
   })
   .tween('x', function() {
     return function() {
